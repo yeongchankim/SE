@@ -19745,7 +19745,7 @@
 											"top": 556,
 											"width": 194.68896484375,
 											"height": 13,
-											"text": "+register()",
+											"text": "+inputItem()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -19941,7 +19941,7 @@
 											"top": 565,
 											"width": 134.32275390625,
 											"height": 13,
-											"text": "+register()",
+											"text": "+AddItem()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -21395,7 +21395,7 @@
 									"font": "Arial;13;0",
 									"left": 685,
 									"top": 388,
-									"width": 38.6572265625,
+									"width": 39.6474609375,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -22979,7 +22979,8 @@
 								"$ref": "AAAAAAGA0EbtPsRnHOU="
 							},
 							"name": "SoldedItemPrice",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -22988,7 +22989,8 @@
 								"$ref": "AAAAAAGA0EbtPsRnHOU="
 							},
 							"name": "AvgRating",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						}
 					],
 					"operations": [
@@ -23191,7 +23193,8 @@
 								"$ref": "AAAAAAGA0ElF18nmXY4="
 							},
 							"name": "ItemName",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -23200,7 +23203,8 @@
 								"$ref": "AAAAAAGA0ElF18nmXY4="
 							},
 							"name": "ItemCompany",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -23209,7 +23213,8 @@
 								"$ref": "AAAAAAGA0ElF18nmXY4="
 							},
 							"name": "ItemPrice",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -23218,7 +23223,8 @@
 								"$ref": "AAAAAAGA0ElF18nmXY4="
 							},
 							"name": "ItemQuantity",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -23227,7 +23233,8 @@
 								"$ref": "AAAAAAGA0ElF18nmXY4="
 							},
 							"name": "ItemRating",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -23244,7 +23251,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGA0ElF18nmXY4="
 							},
-							"name": "AvgRating"
+							"name": "AvgRating",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -23253,7 +23261,8 @@
 								"$ref": "AAAAAAGA0ElF18nmXY4="
 							},
 							"name": "SellORBuy",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						}
 					],
 					"operations": [
@@ -23786,7 +23795,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGA0Fl6rdSCSDQ="
 							},
-							"name": "register"
+							"name": "inputItem"
 						}
 					]
 				},
@@ -23807,7 +23816,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGA0Fl9f9SrH+c="
 							},
-							"name": "register"
+							"name": "AddItem"
 						}
 					]
 				},
