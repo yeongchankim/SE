@@ -1,3 +1,7 @@
-1 1
+1 1 lee 23456 mbc pwd1
+2 1 mbc pwd1
+2 2
+1 1 kim 12345 kbs pwd2
+2 1 kbs pw2
 1 2
-4 5
+6 1

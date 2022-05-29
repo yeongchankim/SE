@@ -21,7 +21,7 @@ void GetBuyItem();//4 3
 void Evaluating();//4 4
 void GetStatics();//5 1
 void program_exit();//6 1
-
+int is_program_exit = 0;
 class Account {
 private:
 	char UserName[MAX_STRING + 1];
@@ -69,19 +69,11 @@ int main()
 void doTask()
 {
 	int menu_level_1 = 0, menu_level_2 = 0;
-	int is_program_exit = 0;
 
-	/*ifstream input_file(INPUT_FILE_NAME);
-	if (!input_file.is_open()) {
-		cerr << "Could not open the file - '"
-			<< INPUT_FILE_NAME << "'" << endl;
-		return;
-	}//input.txt를 발견하지 못하거나 없으면 에러 코드
-	//input.txt 파일 위치 = "C:\Users\"본인 사용자명"\SE\과제3\Assignment3\Assignment3\input.txt"*/
-	while (/*!input_file.eof() || */!is_program_exit)
+	while (!is_program_exit)
 	{
 		fscanf_s(in_fp, "%d %d ", &menu_level_1, &menu_level_2);
-		//input_file >> menu_level_1 >> menu_level_2;
+		
 		cout << menu_level_1 << " " << menu_level_2 << endl;//입력 제대로 되는지 확인용 코드. 지워도됨
 		switch (menu_level_1)
 		{
@@ -210,8 +202,6 @@ void doTask()
 }
 //아래에 함수 구현
 
-
-
 void SignUp()
 {
 	char name[MAX_STRING], SSN[MAX_STRING], ID[MAX_STRING], PW[MAX_STRING];
@@ -289,5 +279,6 @@ void GetStatics()
 
 void program_exit()
 {
+	is_program_exit = 1;
 	fprintf_s(out_fp, "6.1. 종료\n");
 }
