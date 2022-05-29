@@ -224,11 +224,19 @@ void SignUp()
 
 void Withdrawal()
 {
-	char ID[MAX_STRING], PW[MAX_STRING];
-	Acct[my_idx].GetIDPW(ID, PW);
-	Acct[my_idx].check = 0;
-	fprintf_s(out_fp, "1.2. 회원탈퇴\n");
-	fprintf_s(out_fp, "> %s \n", ID);
+	if (my_idx >= 0)
+	{
+		char ID[MAX_STRING], PW[MAX_STRING];
+		Acct[my_idx].GetIDPW(ID, PW);
+		Acct[my_idx].check = 0;
+		my_idx = -1;
+		fprintf_s(out_fp, "1.2. 회원탈퇴\n");
+		fprintf_s(out_fp, "> %s \n", ID);
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 회원탈퇴가 불가능합니다.\n");
+	}
 }
 
 void LogIn()
@@ -255,10 +263,18 @@ void LogIn()
 
 void LogOut()
 {
-	char ID[MAX_STRING], PW[MAX_STRING];
-	Acct[my_idx].GetIDPW(ID, PW);
-	fprintf_s(out_fp, "2.2. 로그아웃\n");
-	fprintf_s(out_fp, "> %s \n", ID);
+	if (my_idx >= 0)
+	{
+		char ID[MAX_STRING], PW[MAX_STRING];
+		Acct[my_idx].GetIDPW(ID, PW);
+		my_idx = -1;
+		fprintf_s(out_fp, "2.2. 로그아웃\n");
+		fprintf_s(out_fp, "> %s \n", ID);
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 로그아웃이 불가능합니다.\n");
+	}
 }
 
 void InputItem()

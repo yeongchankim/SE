@@ -2,6 +2,6 @@
 2 1 mbc pwd1
 2 2
 1 1 kim 12345 kbs pwd2
-2 1 kbs pw2
+2 1 kbs pwd2
 1 2
 6 1
