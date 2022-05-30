@@ -54,7 +54,7 @@ private:
 	char UserPW[MAX_STRING + 1];
 	int SoldedItemPrice;
 	float AvgRating;
-	
+
 
 public:
 	bool check = 0; // Account가 비어있는지 확인
@@ -86,7 +86,7 @@ public:
 		strcpy_s(temp1, MAX_STRING, UserID);
 		strcpy_s(temp2, MAX_STRING, UserPW);
 	};
-	
+
 	void Earn(int money)
 	{
 		SoldedItemPrice += money;
@@ -109,7 +109,7 @@ private:
 public:
 	bool check = 0; //Item이 비어있는지 확인
 
-	void AddItemInfo(const char* str1, const char* str2, const char* str3, int x, int y) 
+	void AddItemInfo(const char* str1, const char* str2, const char* str3, int x, int y)
 	{
 		strcpy_s(SellerID, MAX_STRING + 1, str1);
 		strcpy_s(ItemName, MAX_STRING + 1, str2);
@@ -118,20 +118,28 @@ public:
 		ItemQuantity = y;
 		check = 1;
 	};
-	void getItems(const char* str1) 
+	int getItems(const char* str1, int num)
 	{
 		if (strcmp(SellerID, str1) == 0)
+		{
 			fprintf_s(out_fp, "> { %s %s %d %d }*\n", ItemName, ItemCompany, ItemPrice, ItemQuantity);
+			num++;
+		}
+		return num;
 	};
-	void getSoldedItemInfo(const char* str1)
+	int getSoldedItemInfo(const char* str1, int num)
 	{
 		if (strcmp(SellerID, str1) == 0)
-			if(ItemQuantity - ItemSolded == 0)
-				fprintf_s(out_fp, "> %s %s %s %d %d %f\n",SellerID, ItemName, ItemCompany, ItemPrice, ItemSolded, ItemRating);
+			if (ItemQuantity - ItemSolded == 0)
+			{
+				fprintf_s(out_fp, "> %s %s %s %d %d %f\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemSolded, ItemRating);
+				num++;
+			}
+		return num;
 	};
-	int getSearchItemInfo(const char* str1,int num) 
+	int getSearchItemInfo(const char* str1, int num)
 	{
-		if(strcmp(ItemName, str1) == 0)
+		if (strcmp(ItemName, str1) == 0)
 			if (ItemQuantity - ItemSolded != 0)
 			{
 				fprintf_s(out_fp, "> %s %s %s %d %d %f\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded, ItemRating);
@@ -139,7 +147,7 @@ public:
 			}
 		return num;
 	};
-	int buy(const char* str1, char * seller)
+	int buy(const char* str1, char* seller)
 	{
 		fprintf_s(out_fp, "> %s %s\n", SellerID, ItemName);
 		strcpy_s(BuyerID[ItemSolded], MAX_STRING + 1, str1);
@@ -148,7 +156,15 @@ public:
 		return ItemPrice;
 	}
 	//void updateItemInfo() {};
-	//void getBuyItem() {};
+	int getBuyItem(const char* str1, int num) {
+		for (int i = 0; i < MAX_QUANTITY; i++)
+			if (strcmp(BuyerID[i], str1) == 0)
+			{
+				fprintf_s(out_fp, "> { %s %s %s %d %d %f }*\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded, ItemRating);
+				num++;
+			}
+		return num;
+	};
 	//void saveRating() {};
 
 };
@@ -303,8 +319,8 @@ void doTask()
 		default:
 			break;
 		}
-	current_state.set_current_state(menu_level_1, menu_level_2);
-	fprintf_s(out_fp, "\n");
+		current_state.set_current_state(menu_level_1, menu_level_2);
+		fprintf_s(out_fp, "\n");
 	}
 	return;
 }
@@ -413,11 +429,14 @@ void GetItem()
 {
 	if (strcmp(User, "") != 0)
 	{
+		int num = 0;
 		fprintf_s(out_fp, "3.2. 등록 상품 조회\n");
 		for (int i = 0; i < MAX_ITEM; i++)
 		{
-			Clothes[i].getItems(User);
+			num = Clothes[i].getItems(User, num);
 		}
+		if(num == 0) // 등록한 상품이 없는 경우
+			fprintf_s(out_fp, "> 등록한 상품이 없습니다.\n");
 	}
 	else
 	{
@@ -429,11 +448,14 @@ void GetSoldedItem()
 {
 	if (strcmp(User, "") != 0)
 	{
+		int num = 0;
 		fprintf_s(out_fp, "3.3. 판매 완료 상품 조회\n");
 		for (int i = 0; i < MAX_ITEM; i++)
 		{
-			Clothes[i].getSoldedItemInfo(User);
+			num = Clothes[i].getSoldedItemInfo(User, num);
 		}
+		if(num == 0) //판매 완료된 상품이 없는 경우
+			fprintf_s(out_fp, "> 판매 완료된 상품이 없습니다.\n");
 	}
 	else
 	{
@@ -453,7 +475,8 @@ void InputClothesName()
 		{
 			num = Clothes[i].getSearchItemInfo(Name, num);
 			item_searched_idx = i;
-			break;
+			if(num != 0) //없으면 for문을 1번만 돌아서 추가했습니다
+				break;
 		}
 		if (num == 0)//검색 결과가 존재하지 않는 경우
 		{
@@ -480,7 +503,7 @@ void Buy()
 			{
 				int money;
 				fprintf_s(out_fp, "4.2. 상품 구매\n");
-				money = Clothes[item_searched_idx].buy(User,seller);
+				money = Clothes[item_searched_idx].buy(User, seller);
 				for (int i = 0; i < MAX_ACCOUNT; i++)
 				{
 					if (Acct[i].Find(seller))
@@ -505,6 +528,21 @@ void Buy()
 
 void GetBuyItem()
 {
+	if (strcmp(User, "") != 0)
+	{
+		int num = 0;
+		fprintf_s(out_fp, "4.3. 상품 구매 내역 조회\n");
+		for (int i = 0; i < MAX_ITEM; i++)
+		{
+			num = Clothes[i].getBuyItem(User, num);
+		}
+		if (num == 0) // 상품을 한 번도 구매한 적이 없는 경우
+			fprintf_s(out_fp, "> 상품 구매 내역이 없습니다.\n");
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 상품 구매 내역 조회가 불가능합니다.\n");
+	}
 }
 
 void Evaluating()
