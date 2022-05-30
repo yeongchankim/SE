@@ -4,6 +4,8 @@
 using namespace std;
 
 #define MAX_STRING 32
+#define MAX_ACCOUNT 100
+#define MAX_ITEM 1000
 #define INPUT_FILE_NAME "input.txt"
 #define OUTPUT_FILE_NAME "output.txt"
 
@@ -68,12 +70,14 @@ private:
 	char ItemCompany[MAX_STRING + 1];
 	int ItemPrice;
 	int ItemQuantity;
+	int ItemSolded = 0;//판매된 수량 체크용, 남은 수량은 ItemQuantity에서 ItemSolded를 뺀 값
 	float ItemRating;
 
 public:
 	bool check = 0; //Item이 비어있는지 확인
 
-	void AddItemInfo(const char* str1, const char* str2, const char* str3, int x, int y) {
+	void AddItemInfo(const char* str1, const char* str2, const char* str3, int x, int y) 
+	{
 		strcpy_s(SellerID, MAX_STRING + 1, str1);
 		strcpy_s(ItemName, MAX_STRING + 1, str2);
 		strcpy_s(ItemCompany, MAX_STRING + 1, str3);
@@ -81,12 +85,27 @@ public:
 		ItemQuantity = y;
 		check = 1;
 	};
-	void getItems(const char* str1) {
+	void getItems(const char* str1) 
+	{
 		if (strcmp(SellerID, str1) == 0)
-			fprintf_s(out_fp, "> %s %s %d %d\n", ItemName, ItemCompany, ItemPrice, ItemQuantity);
+			fprintf_s(out_fp, "> { %s %s %d %d }*\n", ItemName, ItemCompany, ItemPrice, ItemQuantity);
 	};
-	//void getSoldedItemInfo() {};
-	//void getSearchItemInfo() {};
+	void getSoldedItemInfo(const char* str1)
+	{
+		if (strcmp(SellerID, str1) == 0)
+			if(ItemQuantity - ItemSolded == 0)
+				fprintf_s(out_fp, "> %s %s %s %d %d %f\n",SellerID, ItemName, ItemCompany, ItemPrice, ItemSolded, ItemRating);
+	};
+	int getSearchItemInfo(const char* str1,int num) 
+	{
+		if(strcmp(ItemName, str1) == 0)
+			if (ItemQuantity - ItemSolded != 0)
+			{
+				fprintf_s(out_fp, "> %s %s %s %d %d %f\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded, ItemRating);
+				num++;
+			}
+		return num;
+	};
 	//void updateItemInfo() {};
 	//void getBuyItem() {};
 	//void saveRating() {};
@@ -94,8 +113,8 @@ public:
 };
 
 
-Account Acct[100];
-Item Clothes[1000];
+Account Acct[MAX_ACCOUNT];
+Item Clothes[MAX_ITEM];
 int my_idx = -1;
 char User[MAX_STRING + 1] = ""; //현재 사용하고 있는 User  /User를 my_idx처럼 사용할 수 있어서 my_idx 빼도 될 것 같습니다.
 
@@ -239,6 +258,7 @@ void doTask()
 		default:
 			break;
 		}
+	fprintf_s(out_fp, "\n");
 	}
 	return;
 }
@@ -248,7 +268,7 @@ void SignUp()
 {
 	char name[MAX_STRING], SSN[MAX_STRING], ID[MAX_STRING], PW[MAX_STRING];
 	fscanf_s(in_fp, "%s %s %s %s", name, sizeof(name), SSN, sizeof(SSN), ID, sizeof(ID), PW, sizeof(PW));
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < MAX_ACCOUNT; i++)
 	{
 		if (Acct[i].check == 0)
 		{
@@ -283,7 +303,7 @@ void LogIn()
 	bool flag = 0; // 회원인지 아닌지 확인하는 flag
 	char ID[MAX_STRING], PW[MAX_STRING];
 	fscanf_s(in_fp, "%s %s", ID, sizeof(ID), PW, sizeof(PW));
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < MAX_ACCOUNT; i++)
 	{
 		if (Acct[i].Find(ID, PW) == 1)
 		{
@@ -326,7 +346,7 @@ void InputItem()
 		char ItemName[MAX_STRING], ItemCompany[MAX_STRING];
 		int ItemPrice = 0, ItemQuantity = 0;
 		fscanf_s(in_fp, "%s %s %d %d", ItemName, sizeof(ItemName), ItemCompany, sizeof(ItemCompany), &ItemPrice, &ItemQuantity);
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < MAX_ITEM; i++)
 		{
 			if (Clothes[i].check == 0)
 			{
@@ -337,6 +357,10 @@ void InputItem()
 		fprintf_s(out_fp, "3.1. 판매 의류 등록\n");
 		fprintf_s(out_fp, "> %s %s %d %d\n", ItemName, ItemCompany, ItemPrice, ItemQuantity);
 	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 판매 의류 등록이 불가능합니다.\n");
+	}
 }
 
 void GetItem()
@@ -344,19 +368,52 @@ void GetItem()
 	if (strcmp(User, "") != 0)
 	{
 		fprintf_s(out_fp, "3.2. 등록 상품 조회\n");
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < MAX_ITEM; i++)
 		{
 			Clothes[i].getItems(User);
 		}
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 등록 상품 조회가 불가능합니다.\n");
 	}
 }
 
 void GetSoldedItem()
 {
+	if (strcmp(User, "") != 0)
+	{
+		fprintf_s(out_fp, "3.3. 판매 완료 상품 조회\n");
+		for (int i = 0; i < MAX_ITEM; i++)
+		{
+			Clothes[i].getSoldedItemInfo(User);
+		}
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 판매 완료 상품 조회가 불가능합니다.\n");
+	}
 }
 
 void InputClothesName()
 {
+	if (strcmp(User, "") != 0)
+	{
+		char Name[MAX_STRING];
+		int num = 0;
+		fscanf_s(in_fp, "%s", Name, sizeof(Name));
+		fprintf_s(out_fp, "4.1. 상품 정보 검색\n");
+		for (int i = 0; i < MAX_ITEM; i++)
+		{
+			num = Clothes[i].getSearchItemInfo(Name, num);
+		}
+		if(num == 0)//검색 결과가 존재하지 않는 경우
+			fprintf_s(out_fp, "> 검색 결과가 없습니다.\n");
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 상품 정보 검색이 불가능합니다.\n");
+	}
 }
 
 void Buy()
