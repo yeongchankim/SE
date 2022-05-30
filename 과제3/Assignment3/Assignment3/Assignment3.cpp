@@ -7,6 +7,8 @@ using namespace std;
 #define INPUT_FILE_NAME "input.txt"
 #define OUTPUT_FILE_NAME "output.txt"
 
+FILE* in_fp, * out_fp;
+
 void doTask();
 void SignUp();//1 1
 void Withdrawal();//1 2
@@ -32,13 +34,13 @@ private:
 	float AvgRating;
 
 public:
-	bool check = 0;
+	bool check = 0; // Account가 비어있는지 확인
 
 	void saveAcct(const char* str1, const char* str2, const char* str3, const char* str4) {
 		strcpy_s(UserName, MAX_STRING + 1, str1);
-		strcpy_s(UserSSN, MAX_STRING, str2);
-		strcpy_s(UserID, MAX_STRING, str3);
-		strcpy_s(UserPW, MAX_STRING, str4);
+		strcpy_s(UserSSN, MAX_STRING + 1, str2);
+		strcpy_s(UserID, MAX_STRING + 1, str3);
+		strcpy_s(UserPW, MAX_STRING + 1, str4);
 		SoldedItemPrice = 0;
 		AvgRating = 0;
 		check = 1;
@@ -58,9 +60,45 @@ public:
 
 };
 
-FILE* in_fp, * out_fp;
+class Item {
+private:
+	char SellerID[MAX_STRING + 1];
+	char BuyerID[MAX_STRING + 1];
+	char ItemName[MAX_STRING + 1];
+	char ItemCompany[MAX_STRING + 1];
+	int ItemPrice;
+	int ItemQuantity;
+	float ItemRating;
+
+public:
+	bool check = 0; //Item이 비어있는지 확인
+
+	void AddItemInfo(const char* str1, const char* str2, const char* str3, int x, int y) {
+		strcpy_s(SellerID, MAX_STRING + 1, str1);
+		strcpy_s(ItemName, MAX_STRING + 1, str2);
+		strcpy_s(ItemCompany, MAX_STRING + 1, str3);
+		ItemPrice = x;
+		ItemQuantity = y;
+		check = 1;
+	};
+	void getItems(const char* str1) {
+		if (strcmp(SellerID, str1) == 0)
+			fprintf_s(out_fp, "> %s %s %d %d\n", ItemName, ItemCompany, ItemPrice, ItemQuantity);
+	};
+	//void getSoldedItemInfo() {};
+	//void getSearchItemInfo() {};
+	//void updateItemInfo() {};
+	//void getBuyItem() {};
+	//void saveRating() {};
+
+};
+
+
 Account Acct[100];
+Item Clothes[1000];
 int my_idx = -1;
+char User[MAX_STRING + 1] = ""; //현재 사용하고 있는 User  /User를 my_idx처럼 사용할 수 있어서 my_idx 빼도 될 것 같습니다.
+
 int main()
 {
 	errno_t input = fopen_s(&in_fp, INPUT_FILE_NAME, "r");
@@ -85,18 +123,18 @@ void doTask()
 		{
 			switch (menu_level_2)
 			{
-				case 1:
-				{
-					SignUp();
-					break;
-				}
-				case 2:
-				{
-					Withdrawal();
-					break;
-				}
-				default:
-					break;
+			case 1:
+			{
+				SignUp();
+				break;
+			}
+			case 2:
+			{
+				Withdrawal();
+				break;
+			}
+			default:
+				break;
 			}
 			break;
 		}
@@ -104,18 +142,18 @@ void doTask()
 		{
 			switch (menu_level_2)
 			{
-				case 1:
-				{
-					LogIn();
-					break;
-				}
-				case 2:
-				{
-					LogOut();
-					break;
-				}
-				default:
-					break;
+			case 1:
+			{
+				LogIn();
+				break;
+			}
+			case 2:
+			{
+				LogOut();
+				break;
+			}
+			default:
+				break;
 			}
 			break;
 		}
@@ -123,23 +161,23 @@ void doTask()
 		{
 			switch (menu_level_2)
 			{
-				case 1:
-				{
-					InputItem();
-					break;
-				}
-				case 2:
-				{
-					GetItem();
-					break;
-				}
-				case 3:
-				{
-					GetSoldedItem();
-					break;
-				}
-				default:
-					break;
+			case 1:
+			{
+				InputItem();
+				break;
+			}
+			case 2:
+			{
+				GetItem();
+				break;
+			}
+			case 3:
+			{
+				GetSoldedItem();
+				break;
+			}
+			default:
+				break;
 			}
 			break;
 		}
@@ -147,28 +185,28 @@ void doTask()
 		{
 			switch (menu_level_2)
 			{
-				case 1:
-				{
-					InputClothesName();
-					break;
-				}
-				case 2:
-				{
-					Buy();
-					break;
-				}
-				case 3:
-				{
-					GetBuyItem();
-					break;
-				}
-				case 4:
-				{
-					Evaluating();
-					break;
-				}
-				default:
-					break;
+			case 1:
+			{
+				InputClothesName();
+				break;
+			}
+			case 2:
+			{
+				Buy();
+				break;
+			}
+			case 3:
+			{
+				GetBuyItem();
+				break;
+			}
+			case 4:
+			{
+				Evaluating();
+				break;
+			}
+			default:
+				break;
 			}
 			break;
 		}
@@ -176,26 +214,26 @@ void doTask()
 		{
 			switch (menu_level_2)
 			{
-				case 1:
-				{
-					GetStatics();
-					break;
-				}
-				default:
-					break;
-				}
+			case 1:
+			{
+				GetStatics();
 				break;
+			}
+			default:
+				break;
+			}
+			break;
 		}
 		case 6:
 		{
 			switch (menu_level_2)
 			{
-				case 1:
-				{
-					program_exit();
-					is_program_exit = 1;
-					break;
-				}
+			case 1:
+			{
+				program_exit();
+				is_program_exit = 1;
+				break;
+			}
 			}
 		}
 		default:
@@ -224,7 +262,8 @@ void SignUp()
 
 void Withdrawal()
 {
-	if (my_idx >= 0)
+	//if (my_idx >= 0) 
+	if (strcmp(User, "") != 0)
 	{
 		char ID[MAX_STRING], PW[MAX_STRING];
 		Acct[my_idx].GetIDPW(ID, PW);
@@ -250,6 +289,7 @@ void LogIn()
 		{
 			fprintf_s(out_fp, "2.1. 로그인\n");
 			fprintf_s(out_fp, "> %s %s\n", ID, PW);
+			strcpy_s(User, MAX_STRING + 1, ID);
 			my_idx = i;
 			flag = 1;
 			break;
@@ -263,10 +303,12 @@ void LogIn()
 
 void LogOut()
 {
-	if (my_idx >= 0)
+	//if (my_idx >= 0)
+	if (strcmp(User, "") != 0)
 	{
 		char ID[MAX_STRING], PW[MAX_STRING];
 		Acct[my_idx].GetIDPW(ID, PW);
+		strcpy_s(User, MAX_STRING + 1, "");
 		my_idx = -1;
 		fprintf_s(out_fp, "2.2. 로그아웃\n");
 		fprintf_s(out_fp, "> %s \n", ID);
@@ -279,10 +321,34 @@ void LogOut()
 
 void InputItem()
 {
+	if (strcmp(User, "") != 0)
+	{
+		char ItemName[MAX_STRING], ItemCompany[MAX_STRING];
+		int ItemPrice = 0, ItemQuantity = 0;
+		fscanf_s(in_fp, "%s %s %d %d", ItemName, sizeof(ItemName), ItemCompany, sizeof(ItemCompany), &ItemPrice, &ItemQuantity);
+		for (int i = 0; i < 1000; i++)
+		{
+			if (Clothes[i].check == 0)
+			{
+				Clothes[i].AddItemInfo(User, ItemName, ItemCompany, ItemPrice, ItemQuantity);
+				break;
+			}
+		}
+		fprintf_s(out_fp, "3.1. 판매 의류 등록\n");
+		fprintf_s(out_fp, "> %s %s %d %d\n", ItemName, ItemCompany, ItemPrice, ItemQuantity);
+	}
 }
 
 void GetItem()
 {
+	if (strcmp(User, "") != 0)
+	{
+		fprintf_s(out_fp, "3.2. 등록 상품 조회\n");
+		for (int i = 0; i < 1000; i++)
+		{
+			Clothes[i].getItems(User);
+		}
+	}
 }
 
 void GetSoldedItem()
