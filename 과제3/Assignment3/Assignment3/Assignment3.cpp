@@ -6,6 +6,7 @@ using namespace std;
 #define MAX_STRING 32
 #define MAX_ACCOUNT 100
 #define MAX_ITEM 1000
+#define MAX_QUANTITY 100
 #define INPUT_FILE_NAME "input.txt"
 #define OUTPUT_FILE_NAME "output.txt"
 
@@ -25,7 +26,26 @@ void GetBuyItem();//4 3
 void Evaluating();//4 4
 void GetStatics();//5 1
 void program_exit();//6 1
-
+class State
+{
+private:
+	int menu_level_1;
+	int menu_level_2;
+public:
+	void set_current_state(int a, int b)
+	{
+		menu_level_1 = a;
+		menu_level_2 = b;
+	}
+	int get_level1()
+	{
+		return menu_level_1;
+	}
+	int get_level2()
+	{
+		return menu_level_2;
+	}
+};
 class Account {
 private:
 	char UserName[MAX_STRING + 1];
@@ -34,10 +54,10 @@ private:
 	char UserPW[MAX_STRING + 1];
 	int SoldedItemPrice;
 	float AvgRating;
+	
 
 public:
 	bool check = 0; // Account가 비어있는지 확인
-
 	void saveAcct(const char* str1, const char* str2, const char* str3, const char* str4) {
 		strcpy_s(UserName, MAX_STRING + 1, str1);
 		strcpy_s(UserSSN, MAX_STRING + 1, str2);
@@ -53,25 +73,38 @@ public:
 			return 1;
 		else return 0;
 	};
+
+	bool Find(const char* str1)
+	{
+		if (strcmp(UserID, str1) == 0)
+			return 1;
+		else return 0;
+	};
+
 	void GetIDPW(char* temp1, char* temp2)
 	{
 		strcpy_s(temp1, MAX_STRING, UserID);
 		strcpy_s(temp2, MAX_STRING, UserPW);
+	};
+	
+	void Earn(int money)
+	{
+		SoldedItemPrice += money;
 	}
-	//void getStatics() {};
 
+	//void getStatics() {};
 };
 
 class Item {
 private:
 	char SellerID[MAX_STRING + 1];
-	char BuyerID[MAX_STRING + 1];
+	char BuyerID[MAX_QUANTITY][MAX_STRING + 1];
 	char ItemName[MAX_STRING + 1];
 	char ItemCompany[MAX_STRING + 1];
 	int ItemPrice;
 	int ItemQuantity;
 	int ItemSolded = 0;//판매된 수량 체크용, 남은 수량은 ItemQuantity에서 ItemSolded를 뺀 값
-	float ItemRating;
+	float ItemRating = 0;
 
 public:
 	bool check = 0; //Item이 비어있는지 확인
@@ -106,6 +139,14 @@ public:
 			}
 		return num;
 	};
+	int buy(const char* str1, char * seller)
+	{
+		fprintf_s(out_fp, "> %s %s\n", SellerID, ItemName);
+		strcpy_s(BuyerID[ItemSolded], MAX_STRING + 1, str1);
+		ItemSolded++;
+		strcpy_s(seller, MAX_STRING + 1, SellerID);
+		return ItemPrice;
+	}
 	//void updateItemInfo() {};
 	//void getBuyItem() {};
 	//void saveRating() {};
@@ -115,9 +156,9 @@ public:
 
 Account Acct[MAX_ACCOUNT];
 Item Clothes[MAX_ITEM];
-int my_idx = -1;
-char User[MAX_STRING + 1] = ""; //현재 사용하고 있는 User  /User를 my_idx처럼 사용할 수 있어서 my_idx 빼도 될 것 같습니다.
-
+int my_idx, item_searched_idx;
+char User[MAX_STRING + 1] = ""; //현재 사용하고 있는 User 
+State current_state;
 int main()
 {
 	errno_t input = fopen_s(&in_fp, INPUT_FILE_NAME, "r");
@@ -130,9 +171,13 @@ int main()
 void doTask()
 {
 	int menu_level_1 = 0, menu_level_2 = 0;
+	int former_menu_level_1 = 0, former_menu_level_2 = 0;
 	int is_program_exit = 0;
 	while (!is_program_exit)
 	{
+		former_menu_level_1 = menu_level_1;
+		former_menu_level_2 = menu_level_2;
+
 		fscanf_s(in_fp, "%d %d ", &menu_level_1, &menu_level_2);
 
 		cout << menu_level_1 << " " << menu_level_2 << endl;//입력 제대로 되는지 확인용 코드. 지워도됨
@@ -258,6 +303,7 @@ void doTask()
 		default:
 			break;
 		}
+	current_state.set_current_state(menu_level_1, menu_level_2);
 	fprintf_s(out_fp, "\n");
 	}
 	return;
@@ -406,9 +452,14 @@ void InputClothesName()
 		for (int i = 0; i < MAX_ITEM; i++)
 		{
 			num = Clothes[i].getSearchItemInfo(Name, num);
+			item_searched_idx = i;
+			break;
 		}
-		if(num == 0)//검색 결과가 존재하지 않는 경우
+		if (num == 0)//검색 결과가 존재하지 않는 경우
+		{
 			fprintf_s(out_fp, "> 검색 결과가 없습니다.\n");
+			item_searched_idx = -1;
+		}
 	}
 	else
 	{
@@ -418,6 +469,38 @@ void InputClothesName()
 
 void Buy()
 {
+	if (strcmp(User, "") != 0)
+	{
+		int level1 = current_state.get_level1();
+		int level2 = current_state.get_level2();
+		char seller[MAX_STRING + 1];
+		if (level1 == 4 && level2 == 1)
+		{
+			if (item_searched_idx >= 0)
+			{
+				int money;
+				fprintf_s(out_fp, "4.2. 상품 구매\n");
+				money = Clothes[item_searched_idx].buy(User,seller);
+				for (int i = 0; i < MAX_ACCOUNT; i++)
+				{
+					if (Acct[i].Find(seller))
+						Acct[i].Earn(money);
+				}
+			}
+			else
+			{
+				fprintf_s(out_fp, "> 검색한 상품이 있어야 상품 구매가 가능합니다.\n");
+			}
+		}
+		else
+		{
+			fprintf_s(out_fp, "> 상품 구매는 상품 검색 후에만 가능합니다.\n");
+		}
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 상품 구매가 불가능합니다.\n");
+	}
 }
 
 void GetBuyItem()
