@@ -53,7 +53,7 @@ private:
 	char UserID[MAX_STRING + 1];
 	char UserPW[MAX_STRING + 1];
 	int SoldedItemPrice;
-	float AvgRating;
+	//float AvgRating; 필요 없는 정보인듯?
 
 
 public:
@@ -64,7 +64,7 @@ public:
 		strcpy_s(UserID, MAX_STRING + 1, str3);
 		strcpy_s(UserPW, MAX_STRING + 1, str4);
 		SoldedItemPrice = 0;
-		AvgRating = 0;
+		//AvgRating = 0;
 		check = 1;
 	};
 	//void deleteAcct() {};
@@ -91,8 +91,6 @@ public:
 	{
 		SoldedItemPrice += money;
 	}
-
-	//void getStatics() {};
 };
 
 class Item {
@@ -175,20 +173,33 @@ public:
 				if (strcmp(BuyerID[i], str2) == 0)//구매자 찾기
 				{
 					ItemRating[i] = num;
-					fprintf_s(out_fp, "> { %s %s %f }*\n", SellerID, ItemName, ItemRating[i]);
+					fprintf_s(out_fp, "> { %s %s %f }*\n", ItemName, SellerID, ItemRating[i]);
 					is = true;//찾아서 수정함
 					break;
 				}
 		return is;
 	};
 
+	void getStatics(const char* str1)
+	{
+		if (strcmp(SellerID, str1) == 0)
+		{
+			float avgRating = 0;
+			for (int i = 0; i < ItemSolded; i++)
+			{
+				avgRating += ItemRating[i];
+			}
+			avgRating /= ItemSolded;
+			fprintf_s(out_fp, "> { %s %d %f }*\n", ItemName, ItemPrice * ItemSolded, avgRating);
+		}
+	};
 };
 
 
 Account Acct[MAX_ACCOUNT];
 Item Clothes[MAX_ITEM];
 int my_idx, item_searched_idx;
-char User[MAX_STRING + 1] = ""; //현재 사용하고 있는 User 
+char User[MAX_STRING + 1] = ""; //현재 사용하고 있는 UserID 
 State current_state;
 int main()
 {
@@ -512,12 +523,13 @@ void Buy()
 		int level1 = current_state.get_level1();
 		int level2 = current_state.get_level2();
 		char seller[MAX_STRING + 1];
+		fprintf_s(out_fp, "4.2. 상품 구매\n");
 		if (level1 == 4 && level2 == 1)
 		{
 			if (item_searched_idx >= 0)
 			{
 				int money;
-				fprintf_s(out_fp, "4.2. 상품 구매\n");
+				
 				money = Clothes[item_searched_idx].buy(User, seller);
 				for (int i = 0; i < MAX_ACCOUNT; i++)
 				{
@@ -567,16 +579,26 @@ void Evaluating()
 		char Item_Name[MAX_STRING];
 		float rate;
 		bool flag = false;
-		fscanf_s(in_fp, "%s %f", Item_Name, sizeof(Item_Name),&rate);
+		fscanf_s(in_fp, "%s %f", Item_Name, sizeof(Item_Name), &rate);
+		int level1 = current_state.get_level1();
+		int level2 = current_state.get_level2();
 		fprintf_s(out_fp, "4.4. 상품 구매만족도 평가\n");
-		for (int i = 0; i < MAX_ITEM; i++)
+		if (level1 == 4 && level2 == 3)
 		{
-			flag = Clothes[i].saveRating(Item_Name, User, rate);
-			if(flag == true)
-				break;
+			
+			for (int i = 0; i < MAX_ITEM; i++)
+			{
+				flag = Clothes[i].saveRating(Item_Name, User, rate);
+				if (flag == true)
+					break;
+			}
+			if (!flag)
+				fprintf_s(out_fp, "> 해당 상품을 구매하지 않아 구매만족도 평가가 불가능합니다.\n");
 		}
-		if(!flag)
-			fprintf_s(out_fp, ">해당 상품을 구매하지 않아 구매만족도 평가가 불가능합니다.\n");
+		else
+		{
+			fprintf_s(out_fp, "> 구매 상품 조회를 하지 않아 구매만족도 평가가 불가능합니다.\n");
+		}
 	}
 	else
 	{
@@ -586,6 +608,18 @@ void Evaluating()
 
 void GetStatics()
 {
+	if (strcmp(User, "") != 0)
+	{
+		fprintf_s(out_fp, "5.1. 판매 상품 통계\n");
+		for (int i = 0; i < MAX_ITEM; i++)
+		{
+			Clothes[i].getStatics(User);
+		}
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 판매 상품 통계 확인이 불가능합니다.\n");
+	}
 }
 
 void program_exit()
