@@ -1,2 +1,5 @@
 ﻿  Assignment3.cpp
-  Assignment3.vcxproj -> C:\Users\김정득\SE\과제3\Assignment3\Debug\Assignment3.exe
+C:\Users\USER-PC\SE\과제3\Assignment3\Assignment3\Assignment3.cpp(137,23): warning C4477: 'fprintf_s' : 서식 문자열 '%f'에 'double' 형식의 인수가 필요하지만 variadic 인수 6의 형식이 'float *'입니다.
+C:\Users\USER-PC\SE\과제3\Assignment3\Assignment3\Assignment3.cpp(147,23): warning C4477: 'fprintf_s' : 서식 문자열 '%f'에 'double' 형식의 인수가 필요하지만 variadic 인수 6의 형식이 'float *'입니다.
+C:\Users\USER-PC\SE\과제3\Assignment3\Assignment3\Assignment3.cpp(165,23): warning C4477: 'fprintf_s' : 서식 문자열 '%f'에 'double' 형식의 인수가 필요하지만 variadic 인수 6의 형식이 'float *'입니다.
+  Assignment3.vcxproj -> C:\Users\USER-PC\SE\과제3\Assignment3\Debug\Assignment3.exe

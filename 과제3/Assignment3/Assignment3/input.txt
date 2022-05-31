@@ -1,19 +1,13 @@
-1 1 lee 23456 mbc pwd1
+1 1 lee 123456 mbc pwd1
 2 1 mbc pwd1
-3 1 hat log 31 1
-3 2
-3 1 cap log 32 0
-3 2
-3 3
-4 1 hat
-4 2
-4 1 cap
-4 2
-4 3
+3 1 hat chulsoo 2000 1
+3 2 
 2 2
-1 1 kim 12345 kbs pwd2
-2 1 kbs pwd2
-3 2
-3 3
-4 3
+1 1 park 987654 obs pwd2
+2 1 obs pwd2
+4 1 hat
+4 2 
+4 3 
+4 4 hat 3
+2 2
 6 1

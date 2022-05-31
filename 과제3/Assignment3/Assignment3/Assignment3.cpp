@@ -4,9 +4,9 @@
 using namespace std;
 
 #define MAX_STRING 32
-#define MAX_ACCOUNT 100
-#define MAX_ITEM 1000
-#define MAX_QUANTITY 100
+#define MAX_ACCOUNT 100//서버를 이용가능한 계정의 수의 최대값
+#define MAX_ITEM 1000//서버에 등록가능한 판매 물품의 최대 종류수
+#define MAX_QUANTITY 100//판매 등록가능한 최대 수량
 #define INPUT_FILE_NAME "input.txt"
 #define OUTPUT_FILE_NAME "output.txt"
 
@@ -104,7 +104,7 @@ private:
 	int ItemPrice;
 	int ItemQuantity;
 	int ItemSolded = 0;//판매된 수량 체크용, 남은 수량은 ItemQuantity에서 ItemSolded를 뺀 값
-	float ItemRating = 0;
+	float ItemRating[MAX_QUANTITY];
 
 public:
 	bool check = 0; //Item이 비어있는지 확인
@@ -116,6 +116,8 @@ public:
 		strcpy_s(ItemCompany, MAX_STRING + 1, str3);
 		ItemPrice = x;
 		ItemQuantity = y;
+		for (int i = 0; i < MAX_QUANTITY; i++)
+			ItemRating[i] = 0;//전부 0으로 초기화
 		check = 1;
 	};
 	int getItems(const char* str1, int num)
@@ -165,7 +167,20 @@ public:
 			}
 		return num;
 	};
-	//void saveRating() {};
+	bool saveRating(const char * str1, const char * str2, float num)
+	{
+		bool is = false;//상품명과 현재 탐색중인 상품명이 일치하는지를 표시
+		if(strcmp(ItemName, str1)==0)
+			for (int i = 0; i < MAX_QUANTITY; i++)
+				if (strcmp(BuyerID[i], str2) == 0)//구매자 찾기
+				{
+					ItemRating[i] = num;
+					fprintf_s(out_fp, "> { %s %s %f }*\n", SellerID, ItemName, ItemRating[i]);
+					is = true;//찾아서 수정함
+					break;
+				}
+		return is;
+	};
 
 };
 
@@ -547,6 +562,26 @@ void GetBuyItem()
 
 void Evaluating()
 {
+	if (strcmp(User, "") != 0)
+	{
+		char Item_Name[MAX_STRING];
+		float rate;
+		bool flag = false;
+		fscanf_s(in_fp, "%s %f", Item_Name, sizeof(Item_Name),&rate);
+		fprintf_s(out_fp, "4.4. 상품 구매만족도 평가\n");
+		for (int i = 0; i < MAX_ITEM; i++)
+		{
+			flag = Clothes[i].saveRating(Item_Name, User, rate);
+			if(flag == true)
+				break;
+		}
+		if(!flag)
+			fprintf_s(out_fp, ">해당 상품을 구매하지 않아 구매만족도 평가가 불가능합니다.\n");
+	}
+	else
+	{
+		fprintf_s(out_fp, "> 로그인하지 않아 상품 구매만족도 평가가 불가능합니다.\n");
+	}
 }
 
 void GetStatics()
