@@ -1,0 +1,23 @@
+1 1 lee 23456 mbc pwd1
+2 1 mbc pwd1
+3 1 hat log 20 1
+3 1 shirt log 10 1
+3 2
+3 1 cap pag 30 1
+3 2
+3 3
+2 2
+1 1 kim 12345 kbs pwd2
+2 1 kbs pwd2
+4 1 hat
+4 2
+4 1 cap
+4 2
+4 3
+4 4 hat 5
+2 2
+1 1 lee 23456 mbc pwd1
+2 1 mbc pwd1
+3 2
+5 1
+6 1
