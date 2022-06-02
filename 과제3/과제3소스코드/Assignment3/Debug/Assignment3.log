@@ -1,9 +1,0 @@
-﻿  Assignment3.cpp
-C:\Users\yejin\OneDrive\바탕 화면\Assignment3\Assignment3\Assignment3.cpp(139,23): warning C4477: 'fprintf_s' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 3의 형식이 'int'입니다.
-C:\Users\yejin\OneDrive\바탕 화면\Assignment3\Assignment3\Assignment3.cpp(139,23): warning C4477: 'fprintf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 5의 형식이 'int *'입니다.
-C:\Users\yejin\OneDrive\바탕 화면\Assignment3\Assignment3\Assignment3.cpp(139,23): warning C4473: 'fprintf_s': 서식 문자열에 대한 인수가 충분하게 전달되지 않았습니다.
-C:\Users\yejin\OneDrive\바탕 화면\Assignment3\Assignment3\Assignment3.cpp(139,23): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 6개 필요하지만 5개가 제공되었습니다.
-C:\Users\yejin\OneDrive\바탕 화면\Assignment3\Assignment3\Assignment3.cpp(139,23): message : 누락된 variadic 인수 6이(가) 서식 문자열 '%f'에 필요합니다.
-C:\Users\yejin\OneDrive\바탕 화면\Assignment3\Assignment3\Assignment3.cpp(150,23): warning C4477: 'fprintf_s' : 서식 문자열 '%f'에 'double' 형식의 인수가 필요하지만 variadic 인수 6의 형식이 'int *'입니다.
-C:\Users\yejin\OneDrive\바탕 화면\Assignment3\Assignment3\Assignment3.cpp(169,23): warning C4477: 'fprintf_s' : 서식 문자열 '%f'에 'double' 형식의 인수가 필요하지만 variadic 인수 6의 형식이 'int *'입니다.
-  Assignment3.vcxproj -> C:\Users\yejin\OneDrive\바탕 화면\Assignment3\Debug\Assignment3.exe
