@@ -112,9 +112,9 @@ public:
 		{
 			strcpy_s(name, MAX_STRING + 1, ItemName);
 			strcpy_s(company_name, MAX_STRING + 1, ItemCompany);
-			price = &ItemPrice;
-			quantity = &ItemQuantity;
-			itemsolded = &ItemSolded;
+			*price = ItemPrice;
+			*quantity = ItemQuantity;
+			*itemsolded = ItemSolded;
 			num++;
 		}
 		return num;
@@ -133,10 +133,10 @@ public:
 				avgRating /= ItemSolded;
 				strcpy_s(name, MAX_STRING + 1, ItemName);
 				strcpy_s(company_name, MAX_STRING + 1, ItemCompany);
-				price = &ItemPrice;
-				quantity = &ItemQuantity;
-				itemsolded = &ItemSolded;
-				avg = &avgRating;
+				*price = ItemPrice;
+				*quantity = ItemQuantity;
+				*itemsolded = ItemSolded;
+				*avg = avgRating;
 				num++;
 			}
 		return num;
@@ -157,10 +157,10 @@ public:
 				strcpy_s(ID, MAX_STRING + 1, SellerID);
 				strcpy_s(name, MAX_STRING + 1, ItemName);
 				strcpy_s(company, MAX_STRING + 1, ItemCompany);
-				price = &ItemPrice;
-				quantity = &ItemQuantity;
-				solded = &ItemSolded;
-				rating = &avgRating;
+				*price = ItemPrice;
+				*quantity = ItemQuantity;
+				*solded = ItemSolded;
+				*rating = avgRating;
 				num++;
 			}
 		return num;
@@ -189,10 +189,10 @@ public:
 				strcpy_s(ID, MAX_STRING + 1, SellerID);
 				strcpy_s(name, MAX_STRING + 1, ItemName);
 				strcpy_s(company, MAX_STRING + 1, ItemCompany);
-				price = &ItemPrice;
-				quantity = &ItemQuantity;
-				solded = &ItemSolded;
-				rating = &avgRating;
+				*price = ItemPrice;
+				*quantity = ItemQuantity;
+				*solded = ItemSolded;
+				*rating = avgRating;
 				num++;
 			}
 		return num;
@@ -226,9 +226,9 @@ public:
 			avgRating /= ItemSolded;
 
 			strcpy_s(name, MAX_STRING + 1, ItemName);
-			price = &ItemPrice;
-			solded = &ItemSolded;
-			rating = &avgRating;
+			*price = ItemPrice;
+			*solded = ItemSolded;
+			*rating = avgRating;
 		}
 	};
 };
@@ -424,12 +424,6 @@ public:
 class GetItem
 {
 public:
-	char ItemName[MAX_STRING + 1];
-	char ItemCompany[MAX_STRING + 1];
-	int ItemPrice;
-	int ItemQuantity;
-	int ItemSolded = 0;
-	
 	void getitem()
 	{
 		GetItemUI getitemui;
@@ -465,20 +459,13 @@ public:
 class GetSoldedItem
 {
 public:
-	char SellerID[MAX_STRING + 1];
-	char ItemName[MAX_STRING + 1];
-	char ItemCompany[MAX_STRING + 1];
-	int ItemPrice;
-	int ItemQuantity;
-	int ItemSolded;
-	float avgRating;
 	void getsoldedItem()
 	{
 		GetSoldedItemUI getsoldeditemui;
 		int num = 0;
 		for (int i = 0; i < MAX_ITEM; i++)
 		{
-			num = Clothes[i].getSoldedItemInfo(User, num, ItemName, ItemCompany, &ItemPrice, &ItemQuantity, &ItemSolded, &avgRating);
+			num = Clothes[i].getSoldedItemInfo(User, num, getsoldeditemui.ItemName[num], getsoldeditemui.ItemCompany[num], &getsoldeditemui.ItemPrice[num], &getsoldeditemui.ItemQuantity[num], &getsoldeditemui.ItemSolded[num], &getsoldeditemui.avgRating[num]);
 		}
 	}
 };

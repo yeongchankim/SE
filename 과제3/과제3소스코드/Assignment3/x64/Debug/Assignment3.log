@@ -15,16 +15,15 @@ C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(379,19): w
 C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(379,19): message : 이 인수는 버퍼 크기로 사용됩니다.
 C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(379,19): warning C4477: 'fscanf_s' : 서식 문자열 '%s'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 4의 형식이 'size_t'입니다.
 C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(379,19): message : 이 인수는 버퍼 크기로 사용됩니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(477,19): warning C4101: 'getsoldeditemui' :참조되지 않은 지역 변수입니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(493,19): warning C4477: 'fscanf_s' : 서식 문자열 '%s'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'size_t'입니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(493,19): message : 이 인수는 버퍼 크기로 사용됩니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(583,22): warning C4477: 'fprintf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 4의 형식이 'int *'입니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(583,22): warning C4313: 'fprintf_s': 서식 문자열의 '%d'이(가) 인수 4('int *' 형식)과(와) 충돌합니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(583,22): warning C4477: 'fprintf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 5의 형식이 '__int64'입니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(583,22): message : 서식 문자열에서 '%lld'을(를) 사용하는 것이 좋습니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(583,22): message : 서식 문자열에서 '%Id'을(를) 사용하는 것이 좋습니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(583,22): message : 서식 문자열에서 '%I64d'을(를) 사용하는 것이 좋습니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(583,22): warning C4477: 'fprintf_s' : 서식 문자열 '%f'에 'double' 형식의 인수가 필요하지만 variadic 인수 6의 형식이 'float *'입니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(630,19): warning C4477: 'fscanf_s' : 서식 문자열 '%s'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'size_t'입니다.
-C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(630,19): message : 이 인수는 버퍼 크기로 사용됩니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(480,19): warning C4477: 'fscanf_s' : 서식 문자열 '%s'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'size_t'입니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(480,19): message : 이 인수는 버퍼 크기로 사용됩니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(570,22): warning C4477: 'fprintf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 4의 형식이 'int *'입니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(570,22): warning C4313: 'fprintf_s': 서식 문자열의 '%d'이(가) 인수 4('int *' 형식)과(와) 충돌합니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(570,22): warning C4477: 'fprintf_s' : 서식 문자열 '%d'에 'int' 형식의 인수가 필요하지만 variadic 인수 5의 형식이 '__int64'입니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(570,22): message : 서식 문자열에서 '%lld'을(를) 사용하는 것이 좋습니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(570,22): message : 서식 문자열에서 '%Id'을(를) 사용하는 것이 좋습니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(570,22): message : 서식 문자열에서 '%I64d'을(를) 사용하는 것이 좋습니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(570,22): warning C4477: 'fprintf_s' : 서식 문자열 '%f'에 'double' 형식의 인수가 필요하지만 variadic 인수 6의 형식이 'float *'입니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(617,19): warning C4477: 'fscanf_s' : 서식 문자열 '%s'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'size_t'입니다.
+C:\Users\USER-PC\SE\과제3\과제3소스코드\Assignment3\과제3.h(617,19): message : 이 인수는 버퍼 크기로 사용됩니다.
   Assignment3.vcxproj -> C:\Users\USER-PC\SE\과제3\과제3소스코드\x64\Debug\과제3.exe
