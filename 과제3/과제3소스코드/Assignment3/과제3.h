@@ -8,7 +8,7 @@ FILE* in_fp, * out_fp;
 
 #define MAX_STRING 32
 #define MAX_ACCOUNT 100
-#define MAX_ITEM 1000
+#define MAX_ITEM 100
 #define MAX_QUANTITY 100
 #define INPUT_FILE_NAME "input.txt"
 #define OUTPUT_FILE_NAME "output.txt"
@@ -53,8 +53,7 @@ public:
 
 		check = 1;
 
-		fprintf_s(out_fp, "1.1. 회원가입\n");
-		fprintf_s(out_fp, "> %s %s %s %s\n", UserName, UserSSN, UserID, UserPW);
+		
 	};
 	//void deleteAcct() {};
 	bool Find(const char* str_userid, const char* str_userpw) {
@@ -107,11 +106,15 @@ public:
 		check = 1;
 	};
 
-	int getItems(const char* str_sellerid, int num) //판매중인 의류 상품 리스트 조회 가능
+	int getItems(const char* str_sellerid, int num, char* name, char* company_name, int *price, int *quantity, int *itemsolded) //판매중인 의류 상품 리스트 조회 가능
 	{
 		if (strcmp(SellerID, str_sellerid) == 0 && (ItemQuantity - ItemSolded != 0))
 		{
-			fprintf_s(out_fp, "> { %s %s %d %d }*\n", ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded);
+			strcpy_s(name, MAX_STRING + 1, ItemName);
+			strcpy_s(company_name, MAX_STRING + 1, ItemCompany);
+			price = &ItemPrice;
+			quantity = &ItemQuantity;
+			itemsolded = &ItemSolded;
 			num++;
 		}
 		return num;
@@ -159,8 +162,8 @@ public:
 		ItemSolded++;
 		strcpy_s(seller, MAX_STRING + 1, SellerID);
 	}
-
-	int getBuyItem(const char* str_buyerid, int num)
+	
+	int getBuyItem(const char* str_buyerid, int num, char* ID, char* name, char* company, int* price, int* quantity, int* solded, float* rating)
 	{
 		float avgRating = 0;
 		for (int i = 0; i < MAX_QUANTITY; i++)
@@ -172,13 +175,19 @@ public:
 				}
 				if (ItemSolded != 0)
 					avgRating /= ItemSolded;
-				fprintf_s(out_fp, "> { %s %s %s %d %d %f }*\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded, avgRating);
+				strcpy_s(ID, MAX_STRING + 1, SellerID);
+				strcpy_s(name, MAX_STRING + 1, ItemName);
+				strcpy_s(company, MAX_STRING + 1, ItemCompany);
+				price = &ItemPrice;
+				quantity = &ItemQuantity;
+				solded = &ItemSolded;
+				rating = &avgRating;
 				num++;
 			}
 		return num;
 	};
 
-	void saveRating(const char* str_itemname, int itemrating)
+	void saveRating(const char* str_itemname, int itemrating, char* ID)
 	{
 		for (int i = 0; i < MAX_QUANTITY; i++)
 		{
@@ -186,17 +195,14 @@ public:
 				if (strcmp(ItemName, str_itemname) == 0)
 				{
 					ItemRating[i] = itemrating;
-
-					fprintf_s(out_fp, "> %s %s %d\n", SellerID, ItemName, ItemRating[i]);
+					strcpy_s(ID, MAX_STRING + 1, SellerID);
 					break;
 				}
 			}
-			else
-				fprintf_s(out_fp, "> 구매만족도는 1-5사이의 정수 값만 입력이 가능합니다.\n");
 		}
 	};
 
-	void getStatics(const char* str_sellerid)
+	void getStatics(const char* str_sellerid, char* name, int* price, int* solded, float* rating)
 	{
 		float avgRating = 0;
 
@@ -208,7 +214,10 @@ public:
 			}
 			avgRating /= ItemSolded;
 
-			fprintf_s(out_fp, "> { %s %d %f }*\n", ItemName, ItemPrice * ItemSolded, avgRating);
+			strcpy_s(name, MAX_STRING + 1, ItemName);
+			price = &ItemPrice;
+			solded = &ItemSolded;
+			rating = &avgRating;
 		}
 	};
 };
@@ -222,39 +231,329 @@ State current_state;
 class SignUpUI
 {
 public:
-	char UserName[MAX_STRING + 1]; //이름
-	char UserSSN[MAX_STRING + 1]; // 주민번호
-	char UserID[MAX_STRING + 1]; //ID
-	char UserPW[MAX_STRING + 1]; //password
+	char UserName[MAX_STRING]; //이름
+	char UserSSN[MAX_STRING]; // 주민번호
+	char UserID[MAX_STRING]; //ID
+	char UserPW[MAX_STRING]; //password
 
 	void signup()
 	{
 		fscanf_s(in_fp, "%s %s %s %s", UserName, sizeof(UserName), UserSSN, sizeof(UserSSN), UserID, sizeof(UserID), UserPW, sizeof(UserPW));
+	}
+
+	void print()
+	{
+		fprintf_s(out_fp, "1.1. 회원가입\n");
+		fprintf_s(out_fp, "> %s %s %s %s\n", UserName, UserSSN, UserID, UserPW);
 	}
 };
 
 class SignUp
 {
 public:
-	char UserName[MAX_STRING + 1]; //이름
-	char UserSSN[MAX_STRING + 1]; // 주민번호
-	char UserID[MAX_STRING + 1]; //ID
-	char UserPW[MAX_STRING + 1]; //password
-
 	void signup()
 	{
-		SignUpUI sui;
-		sui.signup();
-		strcpy_s(sui.UserName, MAX_STRING, UserName);
-		strcpy_s(sui.UserSSN, MAX_STRING, UserSSN);
-		strcpy_s(sui.UserID, MAX_STRING, UserID);
-		strcpy_s(sui.UserPW, MAX_STRING, UserPW);
+		SignUpUI signinui;
+		signinui.signup();
+
 		for (int i = 0; i < MAX_ACCOUNT; i++)
 		{
 			if (Acct[i].check == 0)
 			{
-				Acct[i].saveAcct(UserName, UserSSN, UserID, UserPW);
+				Acct[i].saveAcct(signinui.UserName, signinui.UserSSN, signinui.UserID, signinui.UserPW);
 				break;
+			}
+		}
+
+		signinui.print();
+	}
+};
+
+class LogInUI
+{
+public:
+	char UserID[MAX_STRING]; //ID
+	char UserPW[MAX_STRING]; //password
+	void login()
+	{
+		fscanf_s(in_fp, "%s %s",  UserID, sizeof(UserID), UserPW, sizeof(UserPW));
+	}
+
+	void print()
+	{
+		fprintf_s(out_fp, "2.1. 로그인\n");
+		fprintf_s(out_fp, "> %s %s\n", UserID, UserPW);
+	}
+};
+
+class LogIn
+{
+public:
+	void login()
+	{
+		LogInUI loginui;
+		loginui.login();
+		for (int i = 0; i < MAX_ACCOUNT; i++)
+		{
+			if (Acct[i].Find(loginui.UserID, loginui.UserPW) == 1)
+			{
+				strcpy_s(User, MAX_STRING + 1, loginui.UserID);
+				my_idx = i;
+				loginui.print();
+				break;
+			}
+		}
+	}
+
+};
+
+class WithdrawalUI
+{
+public:
+	void print(char* ID)
+	{
+		fprintf_s(out_fp, "1.2. 회원탈퇴\n");
+		fprintf_s(out_fp, "> %s \n", ID);
+	}
+};
+
+class Withdrawal
+{
+public:
+	void withdrawal()
+	{
+		char ID[MAX_STRING], PW[MAX_STRING];
+		Acct[my_idx].GetIDPW(ID, PW);
+		Acct[my_idx].check = 0;
+		my_idx = -1;
+		WithdrawalUI withdrawalui;
+		withdrawalui.print(ID);
+	}
+};
+
+class LogOutUI
+{
+public:
+	void print(char * ID)
+	{
+		fprintf_s(out_fp, "2.2. 로그아웃\n");
+		fprintf_s(out_fp, "> %s \n", ID);
+	}
+};
+
+class LogOut
+{
+public:
+	void logout()
+	{
+		char ID[MAX_STRING], PW[MAX_STRING];
+		Acct[my_idx].GetIDPW(ID, PW);
+		strcpy_s(User, MAX_STRING + 1, "");
+		my_idx = -1;
+		LogOutUI logoutui;
+		logoutui.print(ID);
+	}
+};
+
+class AddItemUI
+{
+public:
+	char ItemName[MAX_STRING];
+	char ItemCompany[MAX_STRING];
+	int ItemPrice = 0;
+	int ItemQuantity = 0;
+
+	void additem()
+	{
+		fscanf_s(in_fp, "%s %s %d %d", ItemName, sizeof(ItemName), ItemCompany, sizeof(ItemCompany), &ItemPrice, &ItemQuantity);
+	}
+
+	void print()
+	{
+		fprintf_s(out_fp, "3.1. 판매 의류 등록\n");
+		fprintf_s(out_fp, "> %s %s %d %d\n", ItemName, ItemCompany, ItemPrice, ItemQuantity);
+	}
+};
+
+class AddItem
+{
+public:
+	void additem()
+	{
+		AddItemUI additemui;
+		additemui.additem();
+		for (int i = 0; i < MAX_ITEM; i++)
+		{
+			if (Clothes[i].check == 0)
+			{
+				Clothes[i].AddItemInfo(User, additemui.ItemName, additemui.ItemCompany, additemui.ItemPrice, additemui.ItemQuantity);
+				break;
+			}
+		}
+		additemui.print();
+	}
+};
+
+class GetItemUI
+{
+public:
+	char ItemName[MAX_ITEM][MAX_STRING + 1];
+	char ItemCompany[MAX_ITEM][MAX_STRING + 1];
+	int ItemPrice[MAX_ITEM];
+	int ItemQuantity[MAX_ITEM];
+	int ItemSolded[MAX_ITEM] = { 0 };
+	void print(int num)
+	{
+		fprintf_s(out_fp, "3.2. 등록 상품 조회\n");
+		for (int i = 1; i <= num; i++)
+			fprintf_s(out_fp, "> { %s %s %d %d }\n", ItemName[i], ItemCompany[i], ItemPrice[i], ItemQuantity[i] - ItemSolded[i]);
+	}
+};
+
+class GetItem
+{
+public:
+	char ItemName[MAX_STRING + 1];
+	char ItemCompany[MAX_STRING + 1];
+	int ItemPrice;
+	int ItemQuantity;
+	int ItemSolded = 0;
+	
+	void getitem()
+	{
+		GetItemUI getitemui;
+		int num = 0;
+		for (int i = 0; i < MAX_ITEM; i++)
+		{
+			num = Clothes[i].getItems(User, num, ItemName, ItemCompany, &ItemPrice, &ItemQuantity, &ItemSolded);
+			strcpy_s(getitemui.ItemName[num], MAX_STRING + 1, ItemName);
+			strcpy_s(getitemui.ItemCompany[num], MAX_STRING + 1, ItemCompany);
+			getitemui.ItemPrice[num] = ItemPrice;
+			getitemui.ItemQuantity[num] = ItemQuantity;
+			getitemui.ItemSolded[num] = ItemSolded;	
+		}
+
+		getitemui.print(num);
+	}
+};
+
+class GetBuyItemUI
+{
+public:
+	char SellerID[MAX_ITEM][MAX_STRING + 1];
+	char ItemName[MAX_ITEM][MAX_STRING + 1];
+	char ItemCompany[MAX_ITEM][MAX_STRING + 1];
+	int ItemPrice[MAX_ITEM];
+	int ItemQuantity[MAX_ITEM];
+	int ItemSolded[MAX_ITEM];
+	float avgRating[MAX_ITEM];
+
+	void print(int num)
+	{
+		fprintf_s(out_fp, "4.3. 상품 구매 내역 조회\n");
+		for (int i = 0; i < num; i++)
+			fprintf_s(out_fp, "> { %s %s %s %d %d %f }*\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded, avgRating);
+	}
+};
+
+class GetBuyItem
+{
+public:
+	char SellerID[MAX_STRING + 1];
+	char ItemName[MAX_STRING + 1];
+	char ItemCompany[MAX_STRING + 1];
+	int ItemPrice;
+	int ItemQuantity;
+	int ItemSolded;
+	float avgRating;
+
+	GetBuyItemUI getbuyitemui;
+	void getBuyItem()
+	{
+		if (strcmp(User, "") != 0)
+		{
+			int num = 0;
+
+			for (int i = 0; i < MAX_ITEM; i++)
+			{
+				num = Clothes[i].getBuyItem(User, num, SellerID, ItemName, ItemCompany, &ItemPrice, &ItemQuantity, &ItemSolded, &avgRating);
+				strcpy_s(get, MAX_STRING + 1, get)
+			}
+			if (num == 0) // 상품을 한 번도 구매한 적이 없는 경우
+				fprintf_s(out_fp, "> 상품 구매 내역이 없습니다.\n");
+		}
+	}
+
+};
+
+class EvaluateUI
+{
+public:
+	char ItemName[MAX_STRING];
+	int ItemRating;
+
+	void evaluating()
+	{
+		fscanf_s(in_fp, "%s %d", ItemName, sizeof(ItemName), &ItemRating);
+	}
+	void print(char* SellerID)
+	{
+		fprintf_s(out_fp, "4.4. 상품 구매만족도 평가\n");
+		fprintf_s(out_fp, "> %s %s %d\n", SellerID, ItemName, ItemRating);
+	}
+};
+
+class Evaluate
+{
+public:
+	char SellerID[MAX_STRING + 1];
+
+	void evaluate()
+	{
+		EvaluateUI evaluatingui;
+		if (strcmp(User, "") != 0)
+		{
+			evaluatingui.evaluating();
+
+			for (int i = 0; i < MAX_ITEM; i++)
+			{
+				Clothes[i].saveRating(evaluatingui.ItemName, evaluatingui.ItemRating, SellerID);
+			}
+			evaluatingui.print(SellerID);
+		}
+	}
+};
+
+class SoldedItemStaticsUI
+{
+public:
+	void print1()
+	{
+		fprintf_s(out_fp, "5.1. 판매 상품 통계\n");
+	}
+	void print2(char* ItemName, int ItemPrice, int ItemSolded, float avgRating)
+	{
+		fprintf_s(out_fp, "> { %s %d %f }*\n", ItemName, ItemPrice * ItemSolded, avgRating);
+	}
+};
+
+class SoldedItemStatics
+{
+public:
+	char ItemName[MAX_STRING];
+	int ItemPrice;
+	int ItemSolded;
+	float avgRating;
+	void getStatics()
+	{
+		if (strcmp(User, "") != 0)
+		{
+			SoldedItemStaticsUI getstaticsui;
+			getstaticsui.print1();
+			for (int i = 0; i < MAX_ITEM; i++)
+			{
+				Clothes[i].getStatics(User, ItemName, &ItemPrice, &ItemSolded, &avgRating);
+				getstaticsui.print2(ItemName, ItemPrice, ItemSolded, avgRating);
 			}
 		}
 	}

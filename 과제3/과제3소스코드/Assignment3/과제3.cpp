@@ -10,11 +10,11 @@ using namespace std;
 
 void doTask();
 //void SignUp();//1 1
-void Withdrawal();//1 2
-void LogIn();//2 1
-void LogOut();//2 2
-void InputItem();//3 1
-void GetItem();//3 2
+//void Withdrawal();//1 2
+//void LogIn();//2 1
+//void LogOut();//2 2
+//void InputItem();//3 1
+//void GetItem();//3 2
 void GetSoldedItem();//3 3
 void InputClothesName();//4 1
 void Buy();//4 2
@@ -60,7 +60,9 @@ void doTask()
 			}
 			case 2:
 			{
-				Withdrawal();
+				//Withdrawal();
+				Withdrawal withdrawal;
+				withdrawal.withdrawal();
 				break;
 			}
 			default:
@@ -74,12 +76,16 @@ void doTask()
 			{
 			case 1:
 			{
-				LogIn();
+				//LogIn();
+				LogIn login;
+				login.login();
 				break;
 			}
 			case 2:
 			{
-				LogOut();
+				//LogOut();
+				LogOut logout;
+				logout.logout();
 				break;
 			}
 			default:
@@ -93,12 +99,16 @@ void doTask()
 			{
 			case 1:
 			{
-				InputItem();
+				//InputItem();
+				AddItem additem;
+				additem.additem();
 				break;
 			}
 			case 2:
 			{
-				GetItem();
+				//GetItem();
+				GetItem getitem;
+				getitem.getitem();
 				break;
 			}
 			case 3:
@@ -190,7 +200,7 @@ void doTask()
 	}
 	fprintf_s(out_fp, "1.1. 회원가입\n");
 	fprintf_s(out_fp, "> %s %s %s %s\n", name, SSN, ID, PW);
-}*/
+}
 
 void Withdrawal()
 {
@@ -292,7 +302,7 @@ void GetItem()
 	{
 		fprintf_s(out_fp, "> 로그인하지 않아 등록 상품 조회가 불가능합니다.\n");
 	}
-}
+}*/
 
 void GetSoldedItem()
 {
