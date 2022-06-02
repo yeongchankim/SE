@@ -120,7 +120,7 @@ public:
 		return num;
 	};
 
-	int getSoldedItemInfo(const char* str_sellerid, int num) //오름차순으로 정렬해서 출력하는 것도?
+	int getSoldedItemInfo(const char* str_sellerid, int num, char* name, char* company_name, int* price, int* quantity, int* itemsolded, float* avg) //오름차순으로 정렬해서 출력하는 것도?
 	{
 		float avgRating = 0;
 		if (strcmp(SellerID, str_sellerid) == 0)
@@ -131,13 +131,18 @@ public:
 					avgRating += ItemRating[i];
 				}
 				avgRating /= ItemSolded;
-				fprintf_s(out_fp, "> %s %s %d %d %f\n", ItemName, ItemCompany, ItemPrice, ItemSolded, avgRating); //3.3 출력
+				strcpy_s(name, MAX_STRING + 1, ItemName);
+				strcpy_s(company_name, MAX_STRING + 1, ItemCompany);
+				price = &ItemPrice;
+				quantity = &ItemQuantity;
+				itemsolded = &ItemSolded;
+				avg = &avgRating;
 				num++;
 			}
 		return num;
 	};
 
-	int getSearchItemInfo(const char* str_itemname, int num)
+	int getSearchItemInfo(const char* str_itemname, int num, char* ID, char* name, char* company, int* price, int* quantity, int* solded, float* rating)
 	{
 		float avgRating = 0;
 		if (strcmp(ItemName, str_itemname) == 0)
@@ -149,20 +154,26 @@ public:
 				}
 				if (ItemSolded != 0)
 					avgRating /= ItemSolded;
-				fprintf_s(out_fp, "> %s %s %s %d %d %f\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded, avgRating);
+				strcpy_s(ID, MAX_STRING + 1, SellerID);
+				strcpy_s(name, MAX_STRING + 1, ItemName);
+				strcpy_s(company, MAX_STRING + 1, ItemCompany);
+				price = &ItemPrice;
+				quantity = &ItemQuantity;
+				solded = &ItemSolded;
+				rating = &avgRating;
 				num++;
 			}
 		return num;
 	};
 
-	void buy(const char* str_buyerid, char* seller)
+	void buy(const char* str_buyerid, char* ID, char* name)
 	{
-		fprintf_s(out_fp, "> %s %s\n", SellerID, ItemName);
 		strcpy_s(BuyerID[ItemSolded], MAX_STRING + 1, str_buyerid);
 		ItemSolded++;
-		strcpy_s(seller, MAX_STRING + 1, SellerID);
+		strcpy_s(ID, MAX_STRING + 1, SellerID);
+		strcpy_s(name, MAX_STRING + 1, ItemName);
 	}
-	
+
 	int getBuyItem(const char* str_buyerid, int num, char* ID, char* name, char* company, int* price, int* quantity, int* solded, float* rating)
 	{
 		float avgRating = 0;
@@ -405,7 +416,7 @@ public:
 	void print(int num)
 	{
 		fprintf_s(out_fp, "3.2. 등록 상품 조회\n");
-		for (int i = 1; i <= num; i++)
+		for (int i = 0; i < num; i++)
 			fprintf_s(out_fp, "> { %s %s %d %d }\n", ItemName[i], ItemCompany[i], ItemPrice[i], ItemQuantity[i] - ItemSolded[i]);
 	}
 };
@@ -425,15 +436,132 @@ public:
 		int num = 0;
 		for (int i = 0; i < MAX_ITEM; i++)
 		{
-			num = Clothes[i].getItems(User, num, ItemName, ItemCompany, &ItemPrice, &ItemQuantity, &ItemSolded);
-			strcpy_s(getitemui.ItemName[num], MAX_STRING + 1, ItemName);
-			strcpy_s(getitemui.ItemCompany[num], MAX_STRING + 1, ItemCompany);
-			getitemui.ItemPrice[num] = ItemPrice;
-			getitemui.ItemQuantity[num] = ItemQuantity;
-			getitemui.ItemSolded[num] = ItemSolded;	
+			num = Clothes[i].getItems(User, num, getitemui.ItemName[num], getitemui.ItemCompany[num], &getitemui.ItemPrice[num], &getitemui.ItemQuantity[num], &getitemui.ItemSolded[num]);
 		}
 
 		getitemui.print(num);
+	}
+};
+
+class GetSoldedItemUI
+{
+public:
+	char SellerID[MAX_ITEM][MAX_STRING + 1];
+	char ItemName[MAX_ITEM][MAX_STRING + 1];
+	char ItemCompany[MAX_ITEM][MAX_STRING + 1];
+	int ItemPrice[MAX_ITEM];
+	int ItemQuantity[MAX_ITEM];
+	int ItemSolded[MAX_ITEM];
+	float avgRating[MAX_ITEM];
+
+	void print(int num)
+	{
+		fprintf_s(out_fp, "3.3. 판매 완료 상품 조회\n");
+		for (int i = 1; i <= num; i++)
+			fprintf_s(out_fp, "> %s %s %d %d %f\n", ItemName[i], ItemCompany[i], ItemPrice[i], ItemSolded[i], avgRating[i]);
+	}
+};
+
+class GetSoldedItem
+{
+public:
+	char SellerID[MAX_STRING + 1];
+	char ItemName[MAX_STRING + 1];
+	char ItemCompany[MAX_STRING + 1];
+	int ItemPrice;
+	int ItemQuantity;
+	int ItemSolded;
+	float avgRating;
+	void getsoldedItem()
+	{
+		GetSoldedItemUI getsoldeditemui;
+		int num = 0;
+		for (int i = 0; i < MAX_ITEM; i++)
+		{
+			num = Clothes[i].getSoldedItemInfo(User, num, ItemName, ItemCompany, &ItemPrice, &ItemQuantity, &ItemSolded, &avgRating);
+		}
+	}
+};
+
+class GetItemInfoUI
+{
+public:
+	char ItemName[MAX_STRING];
+
+	void inputclothesname()
+	{
+		fscanf_s(in_fp, "%s", ItemName, sizeof(ItemName));
+	}
+	void print(char* SellerID, char* ItemName, char* ItemCompany, int ItemPrice, int ItemQuantity, int ItemSolded, float avgRating)
+	{
+		fprintf_s(out_fp, "4.1. 상품 정보 검색\n");
+		fprintf_s(out_fp, "> %s %s %s %d %d %f\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded, avgRating);
+	}
+};
+
+class GetItemInfo
+{
+public:
+	char SellerID[MAX_STRING + 1];
+	char ItemName[MAX_STRING + 1];
+	char ItemCompany[MAX_STRING + 1];
+	int ItemPrice;
+	int ItemQuantity;
+	int ItemSolded;
+	float avgRating;
+
+	void showclothesinfo()
+	{
+		GetItemInfoUI getiteminfoui;
+		if (strcmp(User, "") != 0)
+		{
+			getiteminfoui.inputclothesname();
+			int num = 0;
+
+			for (int i = 0; i < MAX_ITEM; i++)
+			{
+				num = Clothes[i].getSearchItemInfo(getiteminfoui.ItemName, num, SellerID, ItemName, ItemCompany, &ItemPrice, &ItemQuantity, &ItemSolded, &avgRating);
+				item_searched_idx = i;
+				if (num != 0) //없으면 for문을 1번만 돌아서 추가했습니다
+					break;
+			}
+			getiteminfoui.print(SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity, ItemSolded, avgRating);
+		}
+	}
+};
+
+class BuyItemUI
+{
+public:
+	void print(char* SellerID, char* ItemName)
+	{
+		fprintf_s(out_fp, "4.2. 상품 구매\n");
+		fprintf_s(out_fp, "> %s %s\n", SellerID, ItemName);
+	}
+};
+class BuyItem
+{
+public:
+	char SellerID[MAX_STRING];
+	char ItemName[MAX_STRING];
+
+	void buy()
+	{
+		BuyItemUI buyitemui;
+
+		if (strcmp(User, "") != 0)
+		{
+			int level1 = current_state.get_level1();
+			int level2 = current_state.get_level2();
+			if (level1 == 4 && level2 == 1)
+			{
+				if (item_searched_idx >= 0)
+				{
+					Clothes[item_searched_idx].buy(User, SellerID, ItemName);
+					buyitemui.print(SellerID, ItemName);
+				}
+			}
+		}
 	}
 };
 
@@ -477,10 +605,15 @@ public:
 			for (int i = 0; i < MAX_ITEM; i++)
 			{
 				num = Clothes[i].getBuyItem(User, num, SellerID, ItemName, ItemCompany, &ItemPrice, &ItemQuantity, &ItemSolded, &avgRating);
-				strcpy_s(get, MAX_STRING + 1, get)
+				strcpy_s(getbuyitemui.SellerID[num], MAX_STRING + 1, SellerID);
+				strcpy_s(getbuyitemui.ItemName[num], MAX_STRING + 1, ItemName);
+				strcpy_s(getbuyitemui.ItemCompany[num], MAX_STRING + 1, ItemCompany);
+				getbuyitemui.ItemPrice[num] = ItemPrice;
+				getbuyitemui.ItemQuantity[num] = ItemQuantity;
+				getbuyitemui.ItemSolded[num] = ItemSolded;
+				getbuyitemui.avgRating[num] = avgRating;
 			}
-			if (num == 0) // 상품을 한 번도 구매한 적이 없는 경우
-				fprintf_s(out_fp, "> 상품 구매 내역이 없습니다.\n");
+			getbuyitemui.print(num);
 		}
 	}
 

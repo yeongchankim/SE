@@ -9,18 +9,7 @@ using namespace std;
 
 
 void doTask();
-//void SignUp();//1 1
-//void Withdrawal();//1 2
-//void LogIn();//2 1
-//void LogOut();//2 2
-//void InputItem();//3 1
-//void GetItem();//3 2
-void GetSoldedItem();//3 3
-void InputClothesName();//4 1
-void Buy();//4 2
-void GetBuyItem();//4 3
-void Evaluating();//4 4
-void GetStatics();//5 1
+
 void program_exit();//6 1
 
 int main()
@@ -76,14 +65,12 @@ void doTask()
 			{
 			case 1:
 			{
-				//LogIn();
 				LogIn login;
 				login.login();
 				break;
 			}
 			case 2:
 			{
-				//LogOut();
 				LogOut logout;
 				logout.logout();
 				break;
@@ -99,21 +86,20 @@ void doTask()
 			{
 			case 1:
 			{
-				//InputItem();
 				AddItem additem;
 				additem.additem();
 				break;
 			}
 			case 2:
 			{
-				//GetItem();
 				GetItem getitem;
 				getitem.getitem();
 				break;
 			}
 			case 3:
 			{
-				GetSoldedItem();
+				GetSoldedItem getsoldeditem;
+				getsoldeditem.getsoldedItem();
 				break;
 			}
 			default:
@@ -127,22 +113,26 @@ void doTask()
 			{
 			case 1:
 			{
-				InputClothesName();
+				GetItemInfo getiteminfo;
+				getiteminfo.showclothesinfo();
 				break;
 			}
 			case 2:
 			{
-				Buy();
+				BuyItem buyitem;
+				buyitem.buy();
 				break;
 			}
 			case 3:
 			{
-				GetBuyItem();
+				GetBuyItem getbuyitem;
+				getbuyitem.getBuyItem();
 				break;
 			}
 			case 4:
 			{
-				Evaluating();
+				Evaluate evaluate;
+				evaluate.evaluate();
 				break;
 			}
 			default:
@@ -156,7 +146,8 @@ void doTask()
 			{
 			case 1:
 			{
-				GetStatics();
+				SoldedItemStatics soldeditemstatics;
+				soldeditemstatics.getStatics();
 				break;
 			}
 			default:
@@ -302,7 +293,7 @@ void GetItem()
 	{
 		fprintf_s(out_fp, "> 로그인하지 않아 등록 상품 조회가 불가능합니다.\n");
 	}
-}*/
+}
 
 void GetSoldedItem()
 {
@@ -437,7 +428,7 @@ void GetStatics()
 	{
 		fprintf_s(out_fp, "> 로그인하지 않아 판매 상품 통계 확인이 불가능합니다.\n");
 	}
-}
+}*/
 
 void program_exit()
 {
