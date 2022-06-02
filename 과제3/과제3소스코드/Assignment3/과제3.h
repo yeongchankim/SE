@@ -254,7 +254,7 @@ public:
 		fscanf_s(in_fp, "%s %s %s %s", UserName, sizeof(UserName), UserSSN, sizeof(UserSSN), UserID, sizeof(UserID), UserPW, sizeof(UserPW));
 	}
 
-	void print()
+	void startInterface()
 	{
 		fprintf_s(out_fp, "1.1. 회원가입\n");
 		fprintf_s(out_fp, "> %s %s %s %s\n", UserName, UserSSN, UserID, UserPW);
@@ -278,7 +278,7 @@ public:
 			}
 		}
 
-		signinui.print();
+		signinui.startInterface();
 	}
 };
 
@@ -292,7 +292,7 @@ public:
 		fscanf_s(in_fp, "%s %s",  UserID, sizeof(UserID), UserPW, sizeof(UserPW));
 	}
 
-	void print()
+	void startInterface()
 	{
 		fprintf_s(out_fp, "2.1. 로그인\n");
 		fprintf_s(out_fp, "> %s %s\n", UserID, UserPW);
@@ -312,7 +312,7 @@ public:
 			{
 				strcpy_s(User, MAX_STRING + 1, loginui.UserID);
 				my_idx = i;
-				loginui.print();
+				loginui.startInterface();
 				break;
 			}
 		}
@@ -323,7 +323,7 @@ public:
 class WithdrawalUI
 {
 public:
-	void print(char* ID)
+	void startInterface(char* ID)
 	{
 		fprintf_s(out_fp, "1.2. 회원탈퇴\n");
 		fprintf_s(out_fp, "> %s \n", ID);
@@ -340,14 +340,14 @@ public:
 		Acct[my_idx].check = 0;
 		my_idx = -1;
 		WithdrawalUI withdrawalui;
-		withdrawalui.print(ID);
+		withdrawalui.startInterface(ID);
 	}
 };
 
 class LogOutUI
 {
 public:
-	void print(char * ID)
+	void startInterface(char * ID)
 	{
 		fprintf_s(out_fp, "2.2. 로그아웃\n");
 		fprintf_s(out_fp, "> %s \n", ID);
@@ -364,7 +364,7 @@ public:
 		strcpy_s(User, MAX_STRING + 1, "");
 		my_idx = -1;
 		LogOutUI logoutui;
-		logoutui.print(ID);
+		logoutui.startInterface(ID);
 	}
 };
 
@@ -381,7 +381,7 @@ public:
 		fscanf_s(in_fp, "%s %s %d %d", ItemName, sizeof(ItemName), ItemCompany, sizeof(ItemCompany), &ItemPrice, &ItemQuantity);
 	}
 
-	void print()
+	void startInterface()
 	{
 		fprintf_s(out_fp, "3.1. 판매 의류 등록\n");
 		fprintf_s(out_fp, "> %s %s %d %d\n", ItemName, ItemCompany, ItemPrice, ItemQuantity);
@@ -403,7 +403,7 @@ public:
 				break;
 			}
 		}
-		additemui.print();
+		additemui.startInterface();
 	}
 };
 
@@ -415,7 +415,7 @@ public:
 	int ItemPrice[MAX_ITEM];
 	int ItemQuantity[MAX_ITEM];
 	int ItemSolded[MAX_ITEM] = { 0 };
-	void print(int num)
+	void startInterface(int num)
 	{
 		fprintf_s(out_fp, "3.2. 등록 상품 조회\n");
 		for (int i = 0; i < num; i++)
@@ -435,7 +435,7 @@ public:
 			num = Clothes[i].getItems(User, num, getitemui.ItemName[num], getitemui.ItemCompany[num], &getitemui.ItemPrice[num], &getitemui.ItemQuantity[num], &getitemui.ItemSolded[num]);
 		}
 
-		getitemui.print(num);
+		getitemui.startInterface(num);
 	}
 };
 
@@ -450,7 +450,7 @@ public:
 	int ItemSolded[MAX_ITEM];
 	float avgRating[MAX_ITEM];
 
-	void print(int num)
+	void startInterface(int num)
 	{
 		fprintf_s(out_fp, "3.3. 판매 완료 상품 조회\n");
 		for (int i = 0; i < num; i++)
@@ -469,7 +469,7 @@ public:
 		{
 			num = Clothes[i].getSoldedItemInfo(User, num, getsoldeditemui.ItemName[num], getsoldeditemui.ItemCompany[num], &getsoldeditemui.ItemPrice[num], &getsoldeditemui.ItemQuantity[num], &getsoldeditemui.ItemSolded[num], &getsoldeditemui.avgRating[num]);
 		}
-		getsoldeditemui.print(num);
+		getsoldeditemui.startInterface(num);
 	}
 };
 
@@ -482,7 +482,7 @@ public:
 	{
 		fscanf_s(in_fp, "%s", ItemName, sizeof(ItemName));
 	}
-	void print(char* SellerID, char* ItemName, char* ItemCompany, int ItemPrice, int ItemQuantity, int ItemSolded, float avgRating)
+	void startInterface(char* SellerID, char* ItemName, char* ItemCompany, int ItemPrice, int ItemQuantity, int ItemSolded, float avgRating)
 	{
 		fprintf_s(out_fp, "4.1. 상품 정보 검색\n");
 		fprintf_s(out_fp, "> %s %s %s %d %d %f\n", SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity - ItemSolded, avgRating);
@@ -515,7 +515,7 @@ public:
 				if (num != 0)
 					break;
 			}
-			getiteminfoui.print(SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity, ItemSolded, avgRating);
+			getiteminfoui.startInterface(SellerID, ItemName, ItemCompany, ItemPrice, ItemQuantity, ItemSolded, avgRating);
 		}
 	}
 };
@@ -523,7 +523,7 @@ public:
 class BuyItemUI
 {
 public:
-	void print(char* SellerID, char* ItemName)
+	void startInterface(char* SellerID, char* ItemName)
 	{
 		fprintf_s(out_fp, "4.2. 상품 구매\n");
 		fprintf_s(out_fp, "> %s %s\n", SellerID, ItemName);
@@ -548,7 +548,7 @@ public:
 				if (item_searched_idx >= 0)
 				{
 					Clothes[item_searched_idx].buy(User, SellerID, ItemName);
-					buyitemui.print(SellerID, ItemName);
+					buyitemui.startInterface(SellerID, ItemName);
 				}
 			}
 		}
@@ -639,7 +639,7 @@ public:
 	int ItemPrice[MAX_ITEM];
 	int ItemSolded[MAX_ITEM];
 	float avgRating[MAX_ITEM];
-	void print(int num)
+	void startInterface(int num)
 	{
 		fprintf_s(out_fp, "5.1. 판매 상품 통계\n");
 		for(int i = 0; i < num; i++)
@@ -665,7 +665,7 @@ public:
 				num = Clothes[i].getStatics(User, num, getstaticsui.ItemName[num], &getstaticsui.ItemPrice[num], &getstaticsui.ItemSolded[num], &getstaticsui.avgRating[num]);
 				
 			}
-			getstaticsui.print(num);
+			getstaticsui.startInterface(num);
 		}
 	}
 };
